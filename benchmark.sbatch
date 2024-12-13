@@ -38,7 +38,7 @@ module list
 
 # RAxML-NG settings
 SIMD="avx2"
-PRECISION="10"
+PRECISION="40"
 RANDOM_SEED="42"
 PATTERN_COMPRESSION="off"
 SITE_REPEATS="off"
