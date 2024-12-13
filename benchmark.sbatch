@@ -2,7 +2,7 @@
 #SBATCH --mem=80000mb
 #SBATCH --output output/slurm-logs/%A.out
 ##SBATCH --error output/slurm-logs/%A.err
-#SBATCH --mail-type=BEGIN,END
+#SBATCH --mail-type=ALL
 #SBATCH --mail-user=christoph.stelz@student.kit.edu
 #SBATCH --account=pn72pu
 #SBATCH --get-user-env
