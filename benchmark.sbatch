@@ -76,16 +76,35 @@ fi
 
 declare -A EXECUTABLES
 EXECUTABLES["reference"]="$REFERENCE_RAXML_NG"
-EXECUTABLES["r2d2"]="$R2D2_RAXML_NG"
-EXECUTABLES["reproblas"]="$REPROBLAS_RAXML_NG"
-EXECUTABLES["reprogather"]="$REPROGATHER_RAXML_NG"
-EXECUTABLES["reducebcast"]="$REDUCEBCAST_RAXML_NG"
+EXECUTABLES["r2d2"]="$REPRODUCIBLE_RAXML_NG"
+EXECUTABLES["reproblas"]="$REPRODUCIBLE_RAXML_NG"
+EXECUTABLES["reprogather"]="$REPRODUCIBLE_RAXML_NG"
+EXECUTABLES["reducebcast"]="$REPRODUCIBLE_RAXML_NG"
 
 for repetition in "${REPETITIONS_ARR[@]}"; do
   for variant in "${VARIANTS_ARR[@]}"; do
     >&2 echo "-- Running variant=$variant, repetition=$repetition"
     EXECUTABLE="${EXECUTABLES[$variant]}"
     PREFIX="$OUTPUT_DIR/${variant}_${SIMD}_msa-${NAME}_job-${SLURM_JOBID}_rep-${repetition}"
+
+    unset REPR_REDUCE
+    unset REPR_REDUCE_K
+    if [[ "$variant" == "r2d2" ]]; then
+	export REPR_REDUCE="BINARY_TREE"
+    elif [[ "$variant" == "reproblas" ]]; then
+	export REPR_REDUCE="REPROBLAS"
+    elif [[ "$variant" == "reprogather" ]]; then
+	export REPR_REDUCE="KGATHER"
+	export REPR_REDUCE_K=64
+    elif [[ "$variant" == "reducebcast" ]]; then
+	export REPR_REDUCE="ALLREDUCE"
+    elif [[ "$variant" == "reference" ]]; then
+	unset REPR_REDUCE
+    else
+	echo "Unknown variant $variant"
+	exit -1
+    fi
+
 
     mpiexec -n $SLURM_NTASKS \
       "$EXECUTABLE" \
