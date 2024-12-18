@@ -120,5 +120,7 @@ for repetition in "${REPETITIONS_ARR[@]}"; do
       --threads 1 \
       --model "$MODEL" \
       --tree "$STARTING_TREE"
+
+    echo "-- [benchmark-runner] variant: $variant, repetition: $repetition" | tee -a "$PREFIX.raxml.log"
   done
 done
